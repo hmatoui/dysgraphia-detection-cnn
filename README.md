@@ -1,124 +1,77 @@
-# Project Setup with Virtual Environment
+# Dysgraphia Detection Using AI and Deep Learning
 
-This guide walks you through setting up a virtual environment for this project, installing dependencies, and running Jupyter notebooks inside the virtual environment.
+This study presents a machine learning framework for the early detection of dysgraphia, a neurodevelopmental disorder characterized by impaired handwriting abilities, in children aged 8–15 years. Leveraging convolutional neural networks (CNNs), we developed a diagnostic tool to analyze digitized handwriting samples acquired through a WACOM Intuos Pro Large Tablet. The dataset comprised kinematic and spatial data from 120 participants (63 neurotypical, 57 dysgraphic), with model performance enhanced through data augmentation. Results demonstrate a classification accuracy of 89% using augmented multimodal features, highlighting the efficacy of integrating static (e.g., pressure, tilt) and dynamic (e.g., velocity, stroke discontinuity) parameters for robust dysgraphia identification.
 
-## 1. Create a Virtual Environment
+## Overview
 
-1. **Navigate to your project directory**:
+An experiment was conducted on a dataset of 120 school-aged children, including:
+
+- **63 children** with normal development.
+- **57 children** diagnosed with dysgraphia.
+
+Handwriting data were collected using a **WACOM Intuos Pro Large Tablet** operating at a sampling frequency of 125 Hz. This device captured both static and dynamic metrics of handwriting, including:
+
+- **Spatial coordinates (x, y)**
+- **Pen pressure**
+- **Azimuth and altitude angles**
+- **On-surface and in-air movements**
+
+The dataset was made publicly available by the original authors in their GitHub repository [Dysgraphia-detection-through-machine-learning]([GitHub - peet292929/Dysgraphia-detection-through-machine-learning: Dysgraphia detection through machine learning](https://github.com/peet292929/Dysgraphia-detection-through-machine-learning)).
+
+## Data Preparation
+
+1. **Data Collection**:
    
-   Open your terminal and navigate to your project directory where the Jupyter notebooks are located.
+   - Tasks involved writing letters, words, pseudo-words, and sentences in varying complexity.
+   - Movements were recorded for both **on-surface (contact)** and **in-air (non-contact)** writing.
+
+2. **Preprocessing**:
    
-   ```bash
-   cd /path/to/your/project
-   ```
+   - Data from XML files were parsed to extract x, y coordinates, pressure, and other metrics.
+   - Coordinates were transformed into grayscale images representing handwriting patterns.
 
-2. **Create the virtual environment**:
+3. **Feature Engineering**:
    
-   Run the following command to create a virtual environment. You can name it `venv` or anything you like.
-   
-   ```bash
-   python -m venv venv
-   ```
-   
-   This will create a new directory named `venv` in your project directory. Inside, it will contain a fresh Python environment with its own `bin` (for Linux/macOS) or `Scripts` (for Windows) and `lib` directories.
+   - Three categories of features were considered:
+     - **With contact**: Features when the pen touches the surface.
+     - **Without contact**: Features when the pen is in the air.
+     - **Combined features**: A combination of on-surface and in-air features.
 
-## 2. Activate the Virtual Environment
+### Deep Learning Approach
 
-- **Windows**:
-  
-  To activate the virtual environment on Windows, run:
-  
-  ```bash
-  .\venv\Scripts\activate
-  ```
+A **Convolutional Neural Network (CNN)** was designed with three convolutional layers followed by ReLU activations and max pooling. The final fully connected layer with a sigmoid activation function classified handwriting samples as either dysgraphic or non-dysgraphic.
 
-- **macOS/Linux**:
-  
-  To activate the virtual environment on macOS or Linux, run:
-  
-  ```bash
-  source venv/bin/activate
-  ```
-  
-  Once activated, you should see `(venv)` at the beginning of your terminal prompt.
+### Hyperparameter Tuning
 
-## 3. Install Dependencies
+To optimize the model, a **nested cross-validation** technique was employed. This method ensures robust evaluation of hyperparameters by using an inner loop for hyperparameter tuning and an outer loop for model validation.
 
-Now that the virtual environment is active, you can install the dependencies required for your project.
+### Data Augmentation
 
-1. **Install pip and necessary libraries**:
-   
-   First, make sure `pip` is updated:
-   
-   ```bash
-   python -m pip install --upgrade pip
-   ```
+Techniques such as scaling, rotation, and shearing were applied to increase dataset diversity, which significantly enhanced model performance.
 
-2. **Create a `requirements.txt` file** (if you haven't already):
-   
-   Inside the project directory, create a `requirements.txt` file that lists the required dependencies. Example:
-   
-   ```plaintext
-   scikit-learn
-   tensorflow
-   numpy
-   pandas
-   jupyter
-   matplotlib
-   ```
+### Model Training and Evaluation
 
-3. **Install all dependencies from `requirements.txt`**:
-   
-   With the virtual environment activated, run the following command to install the dependencies listed in `requirements.txt`:
-   
-   ```bash
-   pip install -r requirements.txt
-   ```
+- **Stratified Cross-Validation**: Used to maintain balanced class proportions in training and validation splits.
+- **Metrics Evaluated**:
+  - Accuracy
+  - Sensitivity (Recall)
+  - Specificity
 
-## 4. Install Jupyter in the Virtual Environment
+## Results
 
-1. **Install Jupyter**:
-   
-   If you haven't already, install Jupyter in the virtual environment:
-   
-   ```bash
-   pip install jupyter
-   ```
+The CNN achieved the following results:
 
-2. **Add the Virtual Environment to Jupyter**:
-   
-   To run your notebook from this virtual environment, add the environment to Jupyter's list of kernels:
-   
-   ```bash
-   python -m ipykernel install --user --name=venv --display-name "Python (venv)"
-   ```
-   
-   This will allow you to select your virtual environment as a kernel in Jupyter notebooks.
+| Feature Set              | Accuracy | Sensitivity | Specificity |
+| ------------------------ | -------- | ----------- | ----------- |
+| With Contact (Raw)       | 69%      | 45%         | 71%         |
+| With Contact (Aug.)      | 89%      | 51%         | 78%         |
+| Without Contact (Raw)    | 80%      | 40%         | 63%         |
+| Without Contact (Aug.)   | 69%      | 45%         | 71%         |
+| Combined Features (Raw)  | 50%      | 60%         | 66%         |
+| Combined Features (Aug.) | 80%      | 62%         | 72%         |
 
-## 5. Run Jupyter Notebook
+The best results were achieved using the augmented dataset with combined features, demonstrating that integrating contact and non-contact metrics enhances dysgraphia detection.
 
-Now you can run the Jupyter notebook in the virtual environment:
+## Getting Started
 
-1. **Start Jupyter Notebook**:
-   
-   With the virtual environment activated, run:
-   
-   ```bash
-   jupyter notebook
-   ```
-
-2. **Select the Kernel**:
-   
-   When you open your notebook in the browser, go to the **Kernel** tab in Jupyter and select the environment you created (e.g., "Python (venv)") from the list of available kernels.
-
-## 6. Deactivating the Virtual Environment
-
-Once you are done, deactivate the virtual environment by running:
-
-```bash
-deactivate
-```
-
-This will return you to your system's default Python environment.
-
-# 
+[Project Setup](./docs/setup.md)

@@ -18,6 +18,10 @@ Handwriting data were collected using a **WACOM Intuos Pro Large Tablet** operat
 
 The dataset was made publicly available by the original authors in their GitHub repository [Dysgraphia-detection-through-machine-learning]([GitHub - peet292929/Dysgraphia-detection-through-machine-learning: Dysgraphia detection through machine learning](https://github.com/peet292929/Dysgraphia-detection-through-machine-learning)).
 
+The following image shows an example of the data collected:
+
+![Dataset Example](assets/tablet_data.png)
+
 ## Data Preparation
 
 1. **Data Collection**:
@@ -28,7 +32,9 @@ The dataset was made publicly available by the original authors in their GitHub 
 2. **Preprocessing**:
    
    - Data from XML files were parsed to extract x, y coordinates, pressure, and other metrics.
-   - Coordinates were transformed into grayscale images representing handwriting patterns.
+   - Coordinates were transformed into images representing handwriting patterns with scaled color values according to the speed as shown in the following image
+
+   ![Learned Image Example](assets/xy_v.png)
 
 3. **Feature Engineering**:
    
